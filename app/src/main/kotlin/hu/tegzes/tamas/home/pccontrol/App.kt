@@ -1,7 +1,7 @@
 package hu.tegzes.tamas.home.pccontrol
 
 import io.javalin.Javalin
-import io.javalin.http.Handler
+import io.javalin.http.Context
 import java.awt.GraphicsEnvironment
 
 data class SwitchStatus(val active: Boolean)
@@ -10,13 +10,15 @@ class Switch(val path: String, val stateFun: (Configuration) -> Boolean?) {
     var state = SwitchStatus(true)
     val active: Boolean
         get() = state.active
-    val getHandler = Handler { ctx ->
+
+    fun handleGet(ctx: Context) {
         stateFun(configuration)?.let { state = SwitchStatus(it) }
         println("GET " + ctx.body() + state)
         println()
         ctx.json(state)
     }
-    val postHandler = Handler { ctx ->
+
+    fun handlePost(ctx: Context) {
         println("POST" + ctx.body())
         state = ctx.bodyAsClass(SwitchStatus::class.java)
         ctx.status(200)
@@ -59,12 +61,10 @@ fun main() {
     val sidePortrait = Switch("/side_portrait", Configuration::sidePortrait)
     val switches = listOf(useMain, useSide, sidePortrait)
     for (switch in switches) {
-        app.get(switch.path, switch.getHandler)
-        app.post(switch.path, switch.postHandler)
-        app.after { ctx ->
-            if (ctx.method() == "POST") {
-                setDisplayConf(useMain.active, useSide.active, sidePortrait.active)
-            }
+        app.get(switch.path, switch::handleGet)
+        app.post(switch.path) { ctx ->
+            switch.handlePost(ctx)
+            setDisplayConf(useMain.active, useSide.active, sidePortrait.active)
         }
     }
 }
