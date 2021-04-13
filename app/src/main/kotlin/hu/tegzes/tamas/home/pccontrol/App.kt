@@ -7,7 +7,7 @@ import java.awt.GraphicsEnvironment
 data class SwitchStatus(val active: Boolean)
 
 class Switch(val path: String, val stateFun: (Configuration) -> Boolean?) {
-    var state = SwitchStatus(false)
+    var state = SwitchStatus(true)
     val active: Boolean
         get() = state.active
     val getHandler = Handler { ctx ->
