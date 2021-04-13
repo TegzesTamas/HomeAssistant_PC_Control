@@ -73,11 +73,11 @@ val runtime: Runtime = Runtime.getRuntime()
 fun setDisplayConf(useMain: Boolean, useSide: Boolean, sidePortrait: Boolean) {
     if (useMain != configuration.usingMain
         || useSide != configuration.usingSide
-        || (useSide && sidePortrait != configuration.sidePortrait)
+        || (configuration.usingSide && sidePortrait != configuration.sidePortrait)
     ) {
         val mainPart = if (useMain) "main" else "noMain"
         val sidePart = if (useSide) "side${if (sidePortrait) "Portrait" else "Landscape"}" else "noSide"
-        val filename = """%APPDATA%\MonitorSwitcher\Profiles\$mainPart+$sidePart.xml"""
+        val filename = """${System.getenv("APPDATA")}\MonitorSwitcher\Profiles\$mainPart+$sidePart.xml"""
         runtime.exec("""MonitorSwitcher.exe -load:${filename}""").waitFor()
     }
 }
