@@ -7,6 +7,9 @@
  */
 
 plugins {
+    // ShadowJar
+    id("com.github.johnrengelman.shadow") version "6.1.0"
+
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.4.20"
 
@@ -44,6 +47,7 @@ dependencies {
 }
 
 application {
+    mainClassName = "hu.tegzes.tamas.home.pccontrol.AppKt"
     // Define the main class for the application.
     mainClass.set("hu.tegzes.tamas.home.pccontrol.AppKt")
 }
